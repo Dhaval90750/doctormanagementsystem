@@ -71,7 +71,7 @@ public class AttendanceController {
         
         // Mark attendance since token is valid
         AttendanceDto dto = new AttendanceDto();
-        dto.setSessionId(sessionId);
+        dto.setTimetableEntryId(sessionId);
         dto.setStudentId(studentId);
         dto.setStatus("PRESENT");
         
