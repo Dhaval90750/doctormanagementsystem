@@ -2,7 +2,7 @@ spring:
   application:
     name: dsms-backend
   datasource:
-    url: jdbc:postgresql://localhost:5432/dsms_platform
+    url: jdbc:postgresql://localhost:5433/dsms_platform
     username: dsms_user
     password: dsms_password
     driver-class-name: org.postgresql.Driver

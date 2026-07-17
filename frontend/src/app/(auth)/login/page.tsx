@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { login } from '@/lib/api';
+import Image from 'next/image';
 
 export default function LoginPage() {
   const router = useRouter();
@@ -40,10 +41,8 @@ export default function LoginPage() {
 
       <div className="w-full max-w-md relative z-10">
         <div className="bg-slate-900/80 backdrop-blur-xl border border-white/10 rounded-3xl p-8 shadow-2xl">
-          <div className="text-center mb-8">
-            <h1 className="text-3xl font-bold bg-gradient-to-r from-blue-400 to-violet-400 bg-clip-text text-transparent">
-              DSMS
-            </h1>
+          <div className="text-center mb-8 flex flex-col items-center">
+            <Image src="/scholaris-full-logo.png" alt="Scholaris Logo" width={200} height={60} className="mb-4" />
             <p className="text-slate-400 mt-2">Sign in to your account</p>
           </div>
 

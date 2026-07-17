@@ -5,6 +5,7 @@ import { useRouter, usePathname } from 'next/navigation';
 import Link from 'next/link';
 import { Bell, Search } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
+import Image from 'next/image';
 
 export default function DashboardLayout({ children }: { children: React.ReactNode }) {
   const router = useRouter();
@@ -28,10 +29,8 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
     <div className="min-h-screen bg-slate-950 text-slate-200 flex">
       {/* Sidebar */}
       <div className="w-64 bg-slate-900 border-r border-slate-800 flex flex-col">
-        <div className="p-6 border-b border-slate-800">
-          <h2 className="text-xl font-bold bg-gradient-to-r from-blue-400 to-violet-400 bg-clip-text text-transparent">
-            DSMS
-          </h2>
+        <div className="p-6 border-b border-slate-800 flex flex-col items-start">
+          <Image src="/scholaris-full-logo.png" alt="Scholaris Logo" width={160} height={40} className="mb-2" />
           <p className="text-xs text-slate-400 mt-1">{user.role}</p>
         </div>
         <nav className="flex-1 p-4 space-y-2">
@@ -119,7 +118,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
                   <div className="p-4 border-b border-slate-700 font-medium">Notifications</div>
                   <div className="max-h-64 overflow-y-auto">
                     <div className="p-4 border-b border-slate-700/50 hover:bg-slate-700/30 cursor-pointer">
-                      <p className="text-sm font-medium text-slate-200">Welcome to DSMS!</p>
+                      <p className="text-sm font-medium text-slate-200">Welcome to Scholaris!</p>
                       <p className="text-xs text-slate-400 mt-1">Please complete your profile.</p>
                     </div>
                     <div className="p-4 border-b border-slate-700/50 hover:bg-slate-700/30 cursor-pointer">

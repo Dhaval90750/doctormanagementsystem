@@ -78,8 +78,8 @@ export default function AttendancePage() {
               <div className="bg-white p-6 rounded-2xl inline-block shadow-[0_0_50px_rgba(59,130,246,0.3)]">
                 <QRCodeSVG value={qrPayload} size={256} level="H" />
               </div>
-              <p className="text-sm text-slate-400 max-w-xs mx-auto">
-                Ask students to scan this code using their DSMS mobile app. The code refreshes dynamically.
+              <p className="text-slate-400 mt-6 text-sm text-center max-w-sm">
+                Ask students to scan this code using their Scholaris mobile app. The code refreshes dynamically.
               </p>
             </div>
           ) : (
