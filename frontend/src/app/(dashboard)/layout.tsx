@@ -1,12 +1,17 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { useRouter } from 'next/navigation';
+import { useRouter, usePathname } from 'next/navigation';
 import Link from 'next/link';
+import { Bell, Search } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
 
 export default function DashboardLayout({ children }: { children: React.ReactNode }) {
   const router = useRouter();
+  const pathname = usePathname();
   const [user, setUser] = useState<any>(null);
+  const [notifications, setNotifications] = useState(2);
+  const [showNotifications, setShowNotifications] = useState(false);
 
   useEffect(() => {
     const userData = localStorage.getItem('user');
@@ -86,8 +91,52 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
 
       {/* Main Content */}
       <div className="flex-1 flex flex-col min-h-screen overflow-hidden">
-        <header className="h-16 border-b border-slate-800 bg-slate-900/50 backdrop-blur flex items-center px-8">
-          <h1 className="text-lg font-medium">Welcome, {user.email}</h1>
+        <header className="h-16 border-b border-slate-800 bg-slate-900/50 backdrop-blur flex items-center justify-between px-8">
+          <div className="flex items-center text-slate-400 bg-slate-800/50 px-4 py-1.5 rounded-full text-sm border border-slate-700/50">
+            <Search className="w-4 h-4 mr-2" />
+            <span>Press <kbd className="font-mono text-slate-300">Cmd+K</kbd> to search</span>
+          </div>
+          
+          <div className="flex items-center space-x-6 relative">
+            <button 
+              onClick={() => setShowNotifications(!showNotifications)}
+              className="relative p-2 text-slate-400 hover:text-white transition-colors"
+            >
+              <Bell className="w-5 h-5" />
+              {notifications > 0 && (
+                <span className="absolute top-1 right-1 w-2.5 h-2.5 bg-red-500 rounded-full border-2 border-slate-900 animate-pulse"></span>
+              )}
+            </button>
+            
+            <AnimatePresence>
+              {showNotifications && (
+                <motion.div 
+                  initial={{ opacity: 0, y: 10, scale: 0.95 }}
+                  animate={{ opacity: 1, y: 0, scale: 1 }}
+                  exit={{ opacity: 0, y: 10, scale: 0.95 }}
+                  className="absolute top-12 right-12 w-80 bg-slate-800 border border-slate-700 rounded-2xl shadow-2xl overflow-hidden z-50"
+                >
+                  <div className="p-4 border-b border-slate-700 font-medium">Notifications</div>
+                  <div className="max-h-64 overflow-y-auto">
+                    <div className="p-4 border-b border-slate-700/50 hover:bg-slate-700/30 cursor-pointer">
+                      <p className="text-sm font-medium text-slate-200">Welcome to DSMS!</p>
+                      <p className="text-xs text-slate-400 mt-1">Please complete your profile.</p>
+                    </div>
+                    <div className="p-4 border-b border-slate-700/50 hover:bg-slate-700/30 cursor-pointer">
+                      <p className="text-sm font-medium text-slate-200">System Update</p>
+                      <p className="text-xs text-slate-400 mt-1">Version 2.0 deployed.</p>
+                    </div>
+                  </div>
+                </motion.div>
+              )}
+            </AnimatePresence>
+
+            <div className="flex items-center space-x-3">
+              <div className="w-8 h-8 rounded-full bg-gradient-to-tr from-violet-500 to-indigo-500 flex items-center justify-center font-bold shadow-lg">
+                {user.email.charAt(0).toUpperCase()}
+              </div>
+            </div>
+          </div>
         </header>
         <main className="flex-1 overflow-y-auto p-8">
           {children}

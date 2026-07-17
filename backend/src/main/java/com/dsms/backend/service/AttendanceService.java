@@ -19,11 +19,13 @@ public class AttendanceService {
     private final AttendanceRepository attendanceRepository;
     private final TimetableEntryRepository timetableEntryRepository;
     private final UserRepository userRepository;
+    private final GamificationService gamificationService;
 
-    public AttendanceService(AttendanceRepository attendanceRepository, TimetableEntryRepository timetableEntryRepository, UserRepository userRepository) {
+    public AttendanceService(AttendanceRepository attendanceRepository, TimetableEntryRepository timetableEntryRepository, UserRepository userRepository, GamificationService gamificationService) {
         this.attendanceRepository = attendanceRepository;
         this.timetableEntryRepository = timetableEntryRepository;
         this.userRepository = userRepository;
+        this.gamificationService = gamificationService;
     }
 
     @Transactional
@@ -49,7 +51,13 @@ public class AttendanceService {
         attendance.setMarkedBy(marker);
         attendance.setQrScanned(dto.isQrScanned());
 
-        return attendanceRepository.save(attendance);
+        Attendance saved = attendanceRepository.save(attendance);
+        
+        if ("PRESENT".equalsIgnoreCase(dto.getStatus())) {
+            gamificationService.processAttendanceGamification(student.getId());
+        }
+        
+        return saved;
     }
 
     public List<Attendance> getAttendanceBySession(UUID sessionId) {

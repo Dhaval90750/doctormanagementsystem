@@ -5,6 +5,9 @@ import {
   BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip as RechartsTooltip, ResponsiveContainer, 
   LineChart, Line
 } from 'recharts';
+import { motion } from 'framer-motion';
+import { driver } from 'driver.js';
+import 'driver.js/dist/driver.css';
 
 export default function DashboardOverview() {
   const [role, setRole] = useState<string>('');
@@ -17,6 +20,24 @@ export default function DashboardOverview() {
         const user = JSON.parse(userStr);
         setRole(user.role || 'USER');
         setUserEmail(user.email || '');
+
+        // Start Onboarding Tour if first login
+        if (!localStorage.getItem('tour_completed')) {
+          const driverObj = driver({
+            showProgress: true,
+            steps: [
+              { element: '#tour-welcome', popover: { title: 'Welcome to Scholaris!', description: 'Let us show you around your new intelligent dashboard.' } },
+              { element: '#tour-stats', popover: { title: 'Your Stats', description: 'At a glance, see your attendance, XP, and streaks.' } },
+              { element: '#tour-chart', popover: { title: 'Performance Trends', description: 'Interactive charts help you visualize your progress over time.' } },
+            ]
+          });
+          
+          // Small delay to ensure DOM is ready
+          setTimeout(() => {
+            driverObj.drive();
+            localStorage.setItem('tour_completed', 'true');
+          }, 1000);
+        }
       } catch (e) {
         console.error("Failed to parse user", e);
       }
@@ -43,7 +64,7 @@ export default function DashboardOverview() {
 
   return (
     <div className="space-y-6">
-      <h1 className="text-2xl font-bold">Welcome back, {userEmail}!</h1>
+      <h1 id="tour-welcome" className="text-2xl font-bold">Welcome back, {userEmail}!</h1>
       
       {/* SUPER_ADMIN DASHBOARD */}
       {(role === 'SUPER_ADMIN' || role === 'INSTITUTION_ADMIN') && (
@@ -82,27 +103,27 @@ export default function DashboardOverview() {
 
       {/* STUDENT DASHBOARD */}
       {(role === 'STUDENT_UG' || role === 'STUDENT_INTERN') && (
-        <>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-            <div className="bg-gradient-to-br from-violet-600 to-indigo-600 rounded-2xl p-6 shadow-lg">
+        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }}>
+          <div id="tour-stats" className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            <motion.div whileHover={{ scale: 1.02 }} className="bg-gradient-to-br from-violet-600 to-indigo-600 rounded-2xl p-6 shadow-lg shadow-violet-500/20">
               <h3 className="text-violet-200 mb-2 font-medium">Overall Attendance</h3>
               <p className="text-4xl font-bold text-white">92%</p>
-            </div>
-            <div className="bg-slate-900 border border-slate-800 rounded-2xl p-6">
-              <h3 className="text-slate-400 mb-2">Upcoming Classes</h3>
-              <p className="text-4xl font-bold text-white">3</p>
-            </div>
-            <div className="bg-slate-900 border border-slate-800 rounded-2xl p-6">
-              <h3 className="text-slate-400 mb-2">Pending Assignments</h3>
-              <p className="text-4xl font-bold text-white">1</p>
-            </div>
-            <div className="bg-slate-900 border border-slate-800 rounded-2xl p-6">
+            </motion.div>
+            <motion.div whileHover={{ scale: 1.02 }} className="bg-gradient-to-br from-amber-500 to-orange-600 border border-orange-500/50 rounded-2xl p-6 shadow-lg shadow-orange-500/20">
+              <h3 className="text-orange-100 mb-2 font-medium">Current Streak 🔥</h3>
+              <p className="text-4xl font-bold text-white">7 Days</p>
+            </motion.div>
+            <motion.div whileHover={{ scale: 1.02 }} className="bg-gradient-to-br from-emerald-500 to-teal-600 border border-teal-500/50 rounded-2xl p-6 shadow-lg shadow-teal-500/20">
+              <h3 className="text-teal-100 mb-2 font-medium">Total XP ⭐️</h3>
+              <p className="text-4xl font-bold text-white">1,240</p>
+            </motion.div>
+            <motion.div whileHover={{ scale: 1.02 }} className="bg-slate-900 border border-slate-800 rounded-2xl p-6">
               <h3 className="text-slate-400 mb-2">Unread Announcements</h3>
-              <p className="text-4xl font-bold text-emerald-400">2</p>
-            </div>
+              <p className="text-4xl font-bold text-blue-400">2</p>
+            </motion.div>
           </div>
 
-          <div className="bg-slate-900 border border-slate-800 rounded-2xl p-6 mt-6">
+          <div id="tour-chart" className="bg-slate-900 border border-slate-800 rounded-2xl p-6 mt-6">
             <h3 className="text-lg font-semibold mb-6">Attendance Trend</h3>
             <div className="h-[250px] w-full">
               <ResponsiveContainer width="100%" height="100%">
@@ -110,13 +131,13 @@ export default function DashboardOverview() {
                   <CartesianGrid strokeDasharray="3 3" stroke="#1e293b" />
                   <XAxis dataKey="name" stroke="#94a3b8" />
                   <YAxis stroke="#94a3b8" domain={[0, 100]} />
-                  <RechartsTooltip contentStyle={{ backgroundColor: '#0f172a', borderColor: '#1e293b' }} />
-                  <Line type="monotone" dataKey="attendance" stroke="#10b981" strokeWidth={3} />
+                  <RechartsTooltip contentStyle={{ backgroundColor: '#0f172a', borderColor: '#1e293b', borderRadius: '8px' }} />
+                  <Line type="monotone" dataKey="attendance" stroke="#10b981" strokeWidth={4} dot={{r: 6, fill: '#10b981', strokeWidth: 2, stroke: '#0f172a'}} activeDot={{r: 8}} />
                 </LineChart>
               </ResponsiveContainer>
             </div>
           </div>
-        </>
+        </motion.div>
       )}
 
       {/* FACULTY DASHBOARD */}
